@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd mobile
-          npm ci
+          npm install
 
       - name: Create local.properties
         run: |
