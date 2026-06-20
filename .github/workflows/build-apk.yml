@@ -31,27 +31,27 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd mobile/mobile
+          cd mobile
           npm install
 
       - name: Create local.properties
         run: |
-          cd mobile/mobile/android
+          cd mobile/android
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Make gradlew executable
         run: |
-          cd mobile/mobile/android
+          cd mobile/android
           chmod +x gradlew
 
       - name: Build APK
         run: |
-          cd mobile/mobile/android
+          cd mobile/android
           ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: mobile/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
