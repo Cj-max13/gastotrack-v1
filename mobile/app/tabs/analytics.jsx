@@ -11,8 +11,8 @@ import { colors } from '../../constants/colors';
 import api from '../../services/api';
 import Card from '../../Components/ui/Card';
 import SkeletonLoader from '../../Components/ui/SkeletonLoader';
-import PieChart from '../../Components/charts/PieChart';
-import BarChart from '../../Components/charts/BarChart';
+import PieChart from '../../Components/charts/Piechart';
+import BarChart from '../../Components/charts/Barchart';
 import LineChart from '../../Components/charts/LineChart';
 
 export default function AnalyticsScreen() {
