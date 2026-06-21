@@ -47,7 +47,7 @@
 
 ### **Backend API**
 - **Framework:** Laravel 13
-- **Database:** SQLite (MySQL/PostgreSQL ready)
+- **Database:** phpMyAdmin (Xampp ready)
 - **Authentication:** JWT
 - **AI:** Google Gemini API
 - **Language:** PHP 8.2+
@@ -72,7 +72,7 @@
 - **Backend:**
   - PHP 8.2+
   - Composer
-  - SQLite (or MySQL/PostgreSQL)
+  - phpMyAdmin (or MySQL/PostgreSQL)
 
 ---
 
