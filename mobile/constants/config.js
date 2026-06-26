@@ -4,10 +4,13 @@
 // For physical device use your computer's local IP: http://192.168.x.x:8000
 // For production use your deployed URL: https://your-domain.com
 
-// CONFIGURED FOR PHYSICAL DEVICE (Same WiFi as PC)
-export const API_BASE_URL = 'http://192.168.0.11:8000/api';
+// PRODUCTION - Render.com deployment
+export const API_BASE_URL = 'https://gastotrack-api.onrender.com/api';
 
-// FOR EMULATOR: Uncomment line below and comment line above
+// LOCAL DEVELOPMENT - Uncomment for local testing
+// export const API_BASE_URL = 'http://192.168.0.11:8000/api';
+
+// FOR EMULATOR: Uncomment line below for Android Emulator
 // export const API_BASE_URL = 'http://10.0.2.2:8000/api';
 
 export const config = {
