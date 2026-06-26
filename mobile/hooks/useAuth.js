@@ -20,11 +20,11 @@ export function useAuth() {
 
       await setAuth(userData, token);
       
-      // Save token for notification module (only works in custom build)
+      // Save token for notification module
       try {
-        saveToken(token);
+        await saveToken(token);
       } catch (err) {
-        console.log('Notification module not available - will work after custom build');
+        console.log('Could not save token to notification module:', err);
       }
 
       // Navigate based on role
