@@ -44,8 +44,8 @@ class AdminAnalyticsController extends Controller
 
         // New user registrations per month (last 6 months)
         $newUsersByMonth = User::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('YEAR(created_at) as year'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as month'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as year'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', now()->subMonths(6))

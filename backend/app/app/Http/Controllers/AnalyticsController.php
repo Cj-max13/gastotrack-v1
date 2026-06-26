@@ -150,8 +150,8 @@ class AnalyticsController extends Controller
             ->where('type', 'expense')
             ->where('transaction_date', '>=', now()->subMonths(6))
             ->select(
-                DB::raw('MONTH(transaction_date) as month'),
-                DB::raw('YEAR(transaction_date) as year'),
+                DB::raw('EXTRACT(MONTH FROM transaction_date) as month'),
+                DB::raw('EXTRACT(YEAR FROM transaction_date) as year'),
                 DB::raw('SUM(amount) as total')
             )
             ->groupBy('year', 'month')
