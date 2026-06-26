@@ -5,9 +5,9 @@ export default function AdminLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#2c3e50',
         },
-        headerTintColor: '#000',
+        headerTintColor: '#fff',
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -17,6 +17,27 @@ export default function AdminLayout() {
         name="admin-dashboard" 
         options={{ 
           title: 'Admin Dashboard',
+          headerShown: true,
+        }} 
+      />
+      <Stack.Screen 
+        name="admin-users" 
+        options={{ 
+          title: 'Manage Users',
+          headerShown: true,
+        }} 
+      />
+      <Stack.Screen 
+        name="admin-categories" 
+        options={{ 
+          title: 'Manage Categories',
+          headerShown: true,
+        }} 
+      />
+      <Stack.Screen 
+        name="admin-settings" 
+        options={{ 
+          title: 'System Settings',
           headerShown: true,
         }} 
       />

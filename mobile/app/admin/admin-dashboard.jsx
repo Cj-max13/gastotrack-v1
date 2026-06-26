@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
+import { useAdmin } from '../../hooks/useAdmin';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { user } = useAuthStore();
+  const { getAdminAnalytics, loading } = useAdmin();
   const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalTransactions: 0,
-    totalRevenue: 0,
+    total_users: 0,
+    transactions_today: 0,
+    transactions_this_month: 0,
+    total_amount: 0,
   });
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     // Check if user is admin
@@ -18,8 +22,25 @@ export default function AdminDashboard() {
       Alert.alert('Unauthorized', 'You do not have admin access', [
         { text: 'OK', onPress: () => router.back() }
       ]);
+    } else {
+      loadAnalytics();
     }
   }, [user]);
+
+  const loadAnalytics = async () => {
+    try {
+      const data = await getAdminAnalytics();
+      setStats(data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load analytics');
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadAnalytics();
+    setRefreshing(false);
+  };
 
   const AdminSection = ({ title, children }) => (
     <View style={styles.section}>
@@ -28,14 +49,28 @@ export default function AdminDashboard() {
     </View>
   );
 
-  const AdminButton = ({ title, onPress }) => (
+  const AdminButton = ({ title, onPress, icon }) => (
     <TouchableOpacity style={styles.adminButton} onPress={onPress}>
-      <Text style={styles.adminButtonText}>{title}</Text>
+      <Text style={styles.adminButtonText}>{icon} {title}</Text>
     </TouchableOpacity>
   );
 
+  if (loading && !refreshing && stats.total_users === 0) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#3498db" />
+        <Text style={styles.loadingText}>Loading analytics...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.header}>
         <Text style={styles.title}>Admin Dashboard</Text>
         <Text style={styles.subtitle}>Welcome, {user?.name}</Text>
@@ -44,47 +79,39 @@ export default function AdminDashboard() {
       <AdminSection title="Statistics">
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>{stats.totalUsers}</Text>
+            <Text style={styles.statValue}>{stats.total_users}</Text>
             <Text style={styles.statLabel}>Total Users</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>{stats.totalTransactions}</Text>
-            <Text style={styles.statLabel}>Transactions</Text>
+            <Text style={styles.statValue}>{stats.transactions_today}</Text>
+            <Text style={styles.statLabel}>Today</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>${stats.totalRevenue}</Text>
-            <Text style={styles.statLabel}>Revenue</Text>
+            <Text style={styles.statValue}>{stats.transactions_this_month}</Text>
+            <Text style={styles.statLabel}>This Month</Text>
           </View>
+        </View>
+        <View style={[styles.statCard, { marginTop: 10 }]}>
+          <Text style={styles.statValue}>₱{stats.total_amount?.toLocaleString('en-PH', { minimumFractionDigits: 2 })}</Text>
+          <Text style={styles.statLabel}>Total Amount Processed</Text>
         </View>
       </AdminSection>
 
       <AdminSection title="Management">
         <AdminButton 
           title="Manage Users" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'User management will be available soon')}
-        />
-        <AdminButton 
-          title="Manage Transactions" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'Transaction management will be available soon')}
+          icon="👥"
+          onPress={() => router.push('/admin/admin-users')}
         />
         <AdminButton 
           title="Manage Categories" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'Category management will be available soon')}
+          icon="📁"
+          onPress={() => router.push('/admin/admin-categories')}
         />
-        <AdminButton 
-          title="View Analytics" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'Analytics will be available soon')}
-        />
-      </AdminSection>
-
-      <AdminSection title="Settings">
         <AdminButton 
           title="System Settings" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'System settings will be available soon')}
-        />
-        <AdminButton 
-          title="App Configuration" 
-          onPress={() => Alert.alert('Feature Coming Soon', 'App configuration will be available soon')}
+          icon="⚙️"
+          onPress={() => router.push('/admin/admin-settings')}
         />
       </AdminSection>
     </ScrollView>
@@ -95,6 +122,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#7f8c8d',
+    fontSize: 16,
   },
   header: {
     backgroundColor: '#2c3e50',
@@ -125,7 +161,6 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   statCard: {
     backgroundColor: '#fff',
