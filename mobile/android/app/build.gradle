@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.NotificationListener.mobile'
+    namespace 'com.gastotrack.mobile'
     defaultConfig {
-        applicationId 'com.NotificationListener.mobile'
+        applicationId 'com.gastotrack.mobile'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

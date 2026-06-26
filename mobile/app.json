@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.NotificationListener.mobile",
+      "package": "com.gastotrack.mobile",
       "permissions": [
         "android.permission.BIND_NOTIFICATION_LISTENER_SERVICE",
         "android.permission.INTERNET"
