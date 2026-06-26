@@ -12,7 +12,7 @@
 1. Open `mobile/android/app/src/main/java/com/gastotrack/mobile/ApiSender.java`
 2. Find line ~15: `private static final String API_BASE_URL = "http://192.168.0.11:8000/api/transactions";`
 3. Change the IP address to your current laptop IP
-4. Rebuild the app: `npx expo run:android`
+4. Push to GitHub - Actions will rebuild automatically
 
 ### Issue 2: Package Name Convention - FIXED
 **What changed:**
@@ -28,45 +28,92 @@
 
 ---
 
-## 🧪 TESTING WITH ADB LOGCAT
+## 📦 BUILDING THE APK (GitHub Actions)
 
-### Step 1: Build and Install the App
+Since you don't have Android SDK installed locally, we'll use your existing GitHub Actions workflow to build the APK.
 
-**Option A: Using Expo CLI (Recommended for Testing)**
+### Step 1: Trigger the Build
+
+**Option A: Automatic Build (Push to GitHub)**
 ```bash
-# Navigate to mobile folder
-cd c:\Users\Chris\Documents\Gastotrack\mobile
-
-# Connect your Android phone via USB
-# Enable USB Debugging in Developer Options
-
-# Build and install on connected device
-npx expo run:android
+# Any push to main branch triggers build automatically
+git push origin main
 ```
 
-**What this does:**
-- Compiles the native Java code
-- Includes NotificationListener service
-- Installs APK directly to your phone
-- Starts Metro bundler for JS updates
+**Option B: Manual Trigger**
+1. Go to https://github.com/Cj-max13/gastotrack-v1/actions
+2. Click "Build Android APK with Expo" workflow
+3. Click "Run workflow" → Select branch "main" → Click green "Run workflow" button
 
-**Option B: Build APK for Distribution**
-```bash
-cd mobile/android
-./gradlew assembleRelease
+### Step 2: Wait for Build to Complete
 
-# APK location:
-# mobile/android/app/build/outputs/apk/release/app-release.apk
-```
+1. Go to https://github.com/Cj-max13/gastotrack-v1/actions
+2. Click on the running workflow
+3. Wait 5-10 minutes for build to complete
+4. Look for green checkmark ✅
 
-⚠️ **IMPORTANT:** Expo Go WILL NOT WORK because:
-- Expo Go doesn't include custom native modules
-- NotificationListenerService requires a custom dev build
-- You MUST use `npx expo run:android` or build an APK
+### Step 3: Download the APK
+
+1. On the completed workflow page
+2. Scroll down to "Artifacts" section
+3. Click "app-release" to download
+4. Extract the ZIP file
+5. You'll get `app-release.apk`
 
 ---
 
-### Step 2: Enable Notification Access
+## 📱 INSTALLING THE APK
+
+### Method 1: Direct Install (if phone is with you)
+
+1. Transfer `app-release.apk` to your phone
+   - USB cable → copy to Downloads folder
+   - Or upload to Google Drive → download on phone
+   
+2. On your phone:
+   - Open Files app → Downloads
+   - Tap on `app-release.apk`
+   - Allow installation from unknown sources if prompted
+   - Tap "Install"
+
+### Method 2: ADB Install (if phone connected via USB)
+
+```bash
+# Install adb (Android Debug Bridge) first
+# Download from: https://developer.android.com/tools/releases/platform-tools
+
+# Connect phone via USB, enable USB Debugging
+adb devices  # Should show your device
+
+# Install APK
+adb install path\to\app-release.apk
+
+# If already installed, use -r to replace
+adb install -r path\to\app-release.apk
+```
+
+---
+
+## 🧪 TESTING WITH ADB LOGCAT
+
+### Step 1: Install ADB Tools
+
+**Download Platform Tools (includes adb):**
+- Windows: https://dl.google.com/android/repository/platform-tools-latest-windows.zip
+- Extract ZIP to `C:\platform-tools\`
+- Add to PATH or use full path: `C:\platform-tools\adb.exe`
+
+**Or if you installed Android Studio:**
+- ADB is at: `%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`
+
+### Step 2: Enable USB Debugging on Phone
+
+1. Open Settings → About Phone
+2. Tap "Build Number" 7 times (enables Developer Options)
+3. Go back → Developer Options
+4. Enable "USB Debugging"
+5. Connect phone to computer via USB
+6. On phone: Allow USB debugging from this computer (tap OK)
 
 After installing:
 1. Open phone Settings → Apps → GastoTrack
@@ -82,7 +129,7 @@ Should show: `com.gastotrack.mobile/com.gastotrack.mobile.NotificationService`
 
 ---
 
-### Step 3: Filter ADB Logcat for Your Service
+### Step 3: Enable Notification Access
 
 **Basic command to see all logs:**
 ```bash
@@ -111,7 +158,7 @@ adb logcat -f c:\Users\Chris\Documents\Gastotrack\notification_logs.txt
 
 ---
 
-### Step 4: Trigger Test Notifications
+### Step 4: Start Monitoring Logs with ADB Logcat
 
 #### **GCash Testing**
 1. Open GCash app
@@ -149,7 +196,7 @@ Notification text: "Paid ₱150.00 to GrabCar"
 
 ---
 
-### Step 5: Read and Analyze Logcat Output
+### Step 5: Trigger Test Notifications
 
 **What to look for in logcat:**
 
@@ -174,7 +221,7 @@ D/ApiSender: Transaction sent successfully: {"id":123,"amount":50.00,...}
 
 ---
 
-### Step 6: Adjust Regex Patterns Based on Real Data
+### Step 6: Read and Analyze Logcat Output
 
 **Current regex patterns in `NotificationParser.java`:**
 
@@ -206,7 +253,7 @@ This matches BOTH `₱` and `PHP` formats.
 
 ---
 
-### Step 7: Verify End-to-End Flow
+### Step 7: Adjust Regex Patterns Based on Real Data
 
 **Complete test checklist:**
 
@@ -228,7 +275,7 @@ LIMIT 10;
 
 ---
 
-## 🐛 DEBUGGING TIPS
+### Step 8: Verify End-to-End Flow
 
 ### Check if service is running:
 ```bash
