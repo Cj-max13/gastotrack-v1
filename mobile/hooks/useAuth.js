@@ -2,10 +2,6 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
-import { saveToken } from '../modules/NotificationModule';
-
-// 🎭 MOCK MODE - Set to true for testing without backend
-const MOCK_MODE = true;
 
 export function useAuth() {
   const router = useRouter();
@@ -18,50 +14,10 @@ export function useAuth() {
       setLoading(true);
       setError(null);
 
-      // 🎭 MOCK MODE: Simulate login
-      if (MOCK_MODE) {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-        
-        const mockUser = {
-          id: 1,
-          name: email.includes('admin') ? 'Admin User' : 'Test User',
-          email: email,
-          role: email.includes('admin') ? 'admin' : 'user',
-        };
-        
-        const mockToken = 'mock_jwt_token_' + Date.now();
-        
-        await setAuth(mockUser, mockToken);
-        
-        // Save token for notification module
-        try {
-          await saveToken(mockToken);
-        } catch (err) {
-          console.log('Could not save token to notification module:', err);
-        }
-
-        // Navigate based on role
-        if (mockUser.role === 'admin') {
-          router.replace('/admin/admin-dashboard');
-        } else {
-          router.replace('/tabs/dashboard');
-        }
-
-        return { token: mockToken, user: mockUser };
-      }
-
-      // Real backend login
       const response = await api.post('/login', { email, password });
       const { token, user: userData } = response.data;
 
       await setAuth(userData, token);
-      
-      // Save token for notification module
-      try {
-        await saveToken(token);
-      } catch (err) {
-        console.log('Could not save token to notification module:', err);
-      }
 
       // Navigate based on role
       if (userData.role === 'admin') {
@@ -85,18 +41,7 @@ export function useAuth() {
       setLoading(true);
       setError(null);
 
-      // 🎭 MOCK MODE: Simulate registration
-      if (MOCK_MODE) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-        return { 
-          message: 'Registration successful! You can now login.',
-          user: { name, email }
-        };
-      }
-
-      // Real backend registration
       const response = await api.post('/register', { name, email, password });
-      
       return response.data;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Registration failed';
@@ -108,8 +53,14 @@ export function useAuth() {
   };
 
   const logout = async () => {
-    await clearAuth();
-    router.replace('/auth/login');
+    try {
+      await api.post('/logout');
+    } catch (err) {
+      console.log('Logout API call failed:', err);
+    } finally {
+      await clearAuth();
+      router.replace('/auth/login');
+    }
   };
 
   const isAuthenticated = !!user;
