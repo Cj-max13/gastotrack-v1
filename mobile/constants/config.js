@@ -6,6 +6,8 @@
 
 // PRODUCTION - Render.com deployment
 export const API_BASE_URL = 'https://gastotrack-api.onrender.com/api';
+// 🔧 TEMPORARY TESTING FLAG — set to false before final defense
+export const USE_MOCK_DATA = true;
 
 // LOCAL DEVELOPMENT - Uncomment for local testing
 // export const API_BASE_URL = 'http://192.168.0.11:8000/api';
