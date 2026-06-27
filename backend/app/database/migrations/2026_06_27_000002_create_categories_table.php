@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon'); // emoji like 🍔
             $table->string('color'); // hex like #FF6B6B
+            $table->enum('type', ['income', 'expense'])->default('expense');
             $table->boolean('is_default')->default(false);
             $table->timestamps();
         });

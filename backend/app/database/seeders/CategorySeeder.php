@@ -4,68 +4,109 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CategorySeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        DB::table('categories')->insert([
+        $categories = [
             [
-                'name' => 'Food',
-                'icon' => 'utensils',
-                'color' => '#F97316',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name' => 'Food & Dining',
+                'icon' => '🍔',
+                'color' => '#FF6B6B',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
-                'name' => 'Transport',
-                'icon' => 'car',
-                'color' => '#3B82F6',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name' => 'Transportation',
+                'icon' => '🚗',
+                'color' => '#4ECDC4',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
                 'name' => 'Shopping',
-                'icon' => 'shopping-bag',
-                'color' => '#EC4899',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'icon' => '🛍️',
+                'color' => '#FFE66D',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
-                'name' => 'Bills',
-                'icon' => 'receipt',
-                'color' => '#EAB308',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name' => 'Bills & Utilities',
+                'icon' => '💡',
+                'color' => '#95E1D3',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
                 'name' => 'Entertainment',
-                'icon' => 'film',
-                'color' => '#8B5CF6',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'icon' => '🎮',
+                'color' => '#F38181',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
-                'name' => 'Health',
-                'icon' => 'heart-pulse',
-                'color' => '#EF4444',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name' => 'Healthcare',
+                'icon' => '💊',
+                'color' => '#AA96DA',
+                'type' => 'expense',
+                'is_default' => true,
             ],
             [
                 'name' => 'Education',
-                'icon' => 'graduation-cap',
-                'color' => '#10B981',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'icon' => '📚',
+                'color' => '#FCBAD3',
+                'type' => 'expense',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'Load & Mobile Data',
+                'icon' => '📱',
+                'color' => '#A8D8EA',
+                'type' => 'expense',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'Salary',
+                'icon' => '💰',
+                'color' => '#6BCF7F',
+                'type' => 'income',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'Allowance',
+                'icon' => '💵',
+                'color' => '#8FD14F',
+                'type' => 'income',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'Side Hustle',
+                'icon' => '💼',
+                'color' => '#12CBC4',
+                'type' => 'income',
+                'is_default' => true,
             ],
             [
                 'name' => 'Others',
-                'icon' => 'circle-ellipsis',
-                'color' => '#6B7280',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'icon' => '📦',
+                'color' => '#C7CEEA',
+                'type' => 'expense',
+                'is_default' => true,
             ],
-        ]);
+        ];
+
+        $now = Carbon::now();
+
+        foreach ($categories as &$category) {
+            $category['created_at'] = $now;
+            $category['updated_at'] = $now;
+        }
+
+        DB::table('categories')->insert($categories);
     }
 }

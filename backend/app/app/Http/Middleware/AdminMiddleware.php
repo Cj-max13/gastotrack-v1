@@ -16,19 +16,15 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $userId = $request->attributes->get('auth_user_id');
+        $user = $request->user();
         
-        if (!$userId) {
+        if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
-        $user = User::find($userId);
         
-        if (!$user || $user->role !== 'admin') {
+        if ($user->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized access'], 403);
         }
-
-        $request->attributes->set('auth_user_role', $user->role);
 
         return $next($request);
     }
